@@ -1,0 +1,43 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:z3c="http://namespaces.zope.org/z3c"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    xmlns:genericsetup="http://namespaces.zope.org/genericsetup"
+    i18n_domain="collective.z3cform.datepicker">
+
+    <genericsetup:registerProfile
+        name="testing"
+        title="collective.z3cform.keywordwidget testing profile"
+        directory="profiles/testing"
+        for="Products.CMFPlone.interfaces.ITestCasePloneSiteRoot"
+        provides="Products.GenericSetup.interfaces.EXTENSION"
+        />
+
+    <include package="plone.z3cform" />
+
+    <class class=".widget.KeywordWidget">
+        <require permission="zope.Public"
+                 interface=".interfaces.IKeywordWidget" />
+    </class>
+
+    <adapter factory=".widget.KeywordFieldWidget" />
+
+    <z3c:widgetTemplate
+        mode="input"
+        widget=".interfaces.IKeywordWidget"        
+        layer="z3c.form.interfaces.IFormLayer"
+        template="keyword_input.pt" 
+        />
+
+    <z3c:widgetTemplate
+        mode="display"
+        widget=".interfaces.IKeywordWidget"        
+        layer="z3c.form.interfaces.IFormLayer"
+        template="keyword_display.pt" 
+        />
+
+  <adapter
+      factory=".field.KeywordsDataConverter"
+      />
+
+</configure>
