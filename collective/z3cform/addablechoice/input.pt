@@ -1,9 +1,9 @@
 <div style="width: 45%; float: left">
-<span i18n:translate="label_existing_categories"> Existing categories </span>
-<br />
-<select id="" name="" class="" tabindex="" disabled="" multiple="" size=""
-        tal:attributes="id view/id;
-                        name string:${view/name}:list;
+<select id="" name="" class="" tabindex="" disabled="" size=""
+        tal:define="current_option view/extract;
+                    id view/id;"
+        tal:attributes="id id;
+                        name string:${view/name};
                         class view/klass;
                         style view/style;
                         title view/title;
@@ -23,35 +23,29 @@
                         onfocus view/onfocus;
                         onblur view/onblur;
                         onchange view/onchange;
-                        multiple view/multiple;
                         size view/size">
 
-    <tal:block repeat="item view/items">
+    <tal:block repeat="option view/options">
         <option id="" value="" selected="selected"
-            tal:condition="item/selected"
-            tal:attributes="id item/id;
-                            value item/value"
-            tal:content="item/content">label</option>
+            tal:condition="python: option['value'] == current_option"
+            tal:attributes="id string:${id}-${repeat/option/index};
+                            value option/value"
+            tal:content="option/display">label</option>
 
         <option id="" value=""
-            tal:condition="not:item/selected"
-            tal:attributes="id item/id;
-                            value item/value"
-            tal:content="item/content">label</option>
+            tal:condition="python: option['value'] != current_option"
+            tal:attributes="id string:${id}-${repeat/option/index};
+                            value option/value"
+            tal:content="option/display">label</option>
+
     </tal:block>
 </select>
 </div>
 
 <div style="width: 45%; float: right;">
-<span i18n:translate="label_new_categories">New categories</span>
-<br />
-<textarea id="" name=""
-          cols="15"
-          rows="13"
-          wrap="off"
-          tal:attributes="id string:${view/id};
-                          name string:${view/name}:list;">
-</textarea>
+    <input type="text" id="" name=""
+           tal:attributes="id string:${view/id}-added;
+                           name string:${view/name};" />
 </div>
 
 <input name="field-empty-marker" type="hidden" value="1"

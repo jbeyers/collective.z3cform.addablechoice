@@ -1,89 +1,69 @@
 import zope.component
 import zope.interface
 import zope.schema
-from zope.schema import vocabulary
 import z3c.form
 from z3c.form.i18n import MessageFactory as _
 from Acquisition import aq_inner
 from Products.CMFCore.utils import getToolByName
 import interfaces
 
-class KeywordWidget(z3c.form.browser.select.SelectWidget):
+class AddableChoiceWidget(z3c.form.browser.text.TextWidget):
+    """
+    A textline widget with a dropdown choice of previous values. Suitable for
+    up to, say, 40 options.
+    """
 
-    zope.interface.implementsOnly(interfaces.IKeywordWidget)
+    zope.interface.implementsOnly(interfaces.IAddableChoiceWidget)
     items = ()
-    klass = u'keyword-widget'
-    multiple = 'multiple'
-    size = 14
-    style = "width: 100%;"
+    klass = u'addablechoice-widget'
     noValueToken = u''
-    noValueMessage = _('no value')
     promptMessage = _('select a value ...')
 
-    @property
-    def formatted_value(self):
-        if not self.value:
-            return ''
-        return '<br/>'.join(self.value)
-
-    def getValuesFromRequest(self, default=z3c.form.interfaces.NOVALUE):
-        """Get the values from the request and split the terms with newlines
+    def getValueFromRequest(self, default=z3c.form.interfaces.NOVALUE):
+        """Get the value from the request
         """
-        new_val = []
-        for v in self.request.get(self.name, []):
-            l = [v.strip() for v in v.strip('\r').split('\r')]
-            if '' in l:
-                l.remove('')
-            new_val += l
-        return new_val
+        val = self.request.get(self.name, u'')
+        val = [v for v in val if v]
+        if val:
+            return val[-1]
+        return ''
 
     def extract(self, default=z3c.form.interfaces.NOVALUE):
         """See z3c.form.interfaces.IWidget.
         """
         if (self.name not in self.request and
+            self.name+'-added' not in self.request and
             self.name+'-empty-marker' in self.request):
             return default
 
-        value = self.getValuesFromRequest() or default
-        if value != default:
-            for token in value:
-                if token == self.noValueToken:
-                    continue
-
-                try:
-                    self.terms.getTermByToken(token)
-                except LookupError:
-                    return default
+        value = self.getValueFromRequest() or default
         return value
 
-    def updateTerms(self):
-        if self.terms is None:
-            self.terms = z3c.form.term.Terms()
-
+    def options(self):
+        """
+        A simplified version of the choicewidget terms. We are only concerned
+        with single-line text values, so we do not need complicated
+        vocabularies.
+        """
         context = aq_inner(self.context)
         index = self.field.getName()
         catalog = getToolByName(context, 'portal_catalog')
         values = list(catalog.uniqueValuesFor(index))
-        if None in values or '' in values:
-            values = [v for v in values if v]
+        values = [v for v in values if v]
 
-        added_values = self.getValuesFromRequest()
-        for v in added_values:
-            if v and v not in values:
-                values.append(v)
+        added_value = self.getValueFromRequest()
+        if added_value and added_value not in values:
+            values.append(added_value)
 
-        items = []
+        options = [{'value': '', 'display': self.promptMessage}]
         for v in values:
-            items.append(vocabulary.SimpleTerm(v, v, v))
+            options.append({'value': v,'display': v})
+        return options
 
-        self.terms.terms = vocabulary.SimpleVocabulary(items)
-        return self.terms
-
-
-@zope.component.adapter(interfaces.IKeywordCollection, z3c.form.interfaces.IFormLayer)
+@zope.component.adapter(zope.schema.TextLine, z3c.form.interfaces.IFormLayer)
 @zope.interface.implementer(z3c.form.interfaces.IFieldWidget)
-def KeywordFieldWidget(field, request):
-    """ IFieldWidget factory for KeywordWidget 
+def AddableChoiceFieldWidget(field, request):
+    """ IFieldWidget factory for AddableChoiceWidget 
     """
-    return z3c.form.widget.FieldWidget(field, KeywordWidget(request))
+    return z3c.form.widget.FieldWidget(field, AddableChoiceWidget(request))
 

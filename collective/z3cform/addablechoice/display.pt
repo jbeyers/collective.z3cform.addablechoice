@@ -15,5 +15,5 @@
                       onkeydown view/onkeydown;
                       onkeyup view/onkeyup">
 
-    <tal:block condition="view/formatted_value" content="structure view/formatted_value"/>
+    <tal:block condition="view/value" content="structure view/value"/>
 </span>

@@ -3,11 +3,11 @@
     xmlns:z3c="http://namespaces.zope.org/z3c"
     xmlns:browser="http://namespaces.zope.org/browser"
     xmlns:genericsetup="http://namespaces.zope.org/genericsetup"
-    i18n_domain="collective.z3cform.datepicker">
+    i18n_domain="collective.z3cform.addablechoice">
 
     <genericsetup:registerProfile
         name="testing"
-        title="collective.z3cform.keywordwidget testing profile"
+        title="collective.z3cform.addablechoice testing profile"
         directory="profiles/testing"
         for="Products.CMFPlone.interfaces.ITestCasePloneSiteRoot"
         provides="Products.GenericSetup.interfaces.EXTENSION"
@@ -15,29 +15,23 @@
 
     <include package="plone.z3cform" />
 
-    <class class=".widget.KeywordWidget">
+    <class class=".widget.AddableChoiceWidget">
         <require permission="zope.Public"
-                 interface=".interfaces.IKeywordWidget" />
+                 interface=".interfaces.IAddableChoiceWidget" />
     </class>
-
-    <adapter factory=".widget.KeywordFieldWidget" />
 
     <z3c:widgetTemplate
         mode="input"
-        widget=".interfaces.IKeywordWidget"        
+        widget=".interfaces.IAddableChoiceWidget"        
         layer="z3c.form.interfaces.IFormLayer"
-        template="keyword_input.pt" 
+        template="input.pt" 
         />
 
     <z3c:widgetTemplate
         mode="display"
-        widget=".interfaces.IKeywordWidget"        
+        widget=".interfaces.IAddableChoiceWidget"        
         layer="z3c.form.interfaces.IFormLayer"
-        template="keyword_display.pt" 
+        template="display.pt" 
         />
-
-  <adapter
-      factory=".field.KeywordsDataConverter"
-      />
 
 </configure>

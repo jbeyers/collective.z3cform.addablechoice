@@ -12,7 +12,7 @@ ptc.setupPloneSite(
                    extension_profiles=['collective.z3cform.keywordwidget:testing'],
                    )
 
-import collective.z3cform.keywordwidget
+import collective.z3cform.addablechoice
 
 class TestCase(ptc.PloneTestCase):
     class layer(PloneSite):
