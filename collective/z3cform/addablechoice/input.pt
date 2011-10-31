@@ -1,8 +1,6 @@
 <div style="width: 45%; float: left">
 <select id="" name="" class="" tabindex="" disabled="" size=""
-        tal:define="current_option view/extract;
-                    id view/id;"
-        tal:attributes="id id;
+        tal:attributes="id view/id;
                         name string:${view/name};
                         class view/klass;
                         style view/style;
@@ -27,22 +25,22 @@
 
     <tal:block repeat="option view/options">
         <option id="" value="" selected="selected"
-            tal:condition="python: option['value'] == current_option"
-            tal:attributes="id string:${id}-${repeat/option/index};
+            tal:condition="python: option['value'] == view.value"
+            tal:attributes="id string:${view/id}-${repeat/option/index};
                             value option/value"
             tal:content="option/display">label</option>
 
         <option id="" value=""
-            tal:condition="python: option['value'] != current_option"
-            tal:attributes="id string:${id}-${repeat/option/index};
+            tal:condition="python: option['value'] != view.value"
+            tal:attributes="id string:${view/id}-${repeat/option/index};
                             value option/value"
             tal:content="option/display">label</option>
 
     </tal:block>
 </select>
 </div>
-
-<div style="width: 45%; float: right;">
+<div style="width: 4%;float:left;">or:</div>
+<div style="width: 45%; float: left;">
     <input type="text" id="" name=""
            tal:attributes="id string:${view/id}-added;
                            name string:${view/name};" />

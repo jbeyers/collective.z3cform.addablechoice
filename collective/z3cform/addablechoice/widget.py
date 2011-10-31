@@ -26,7 +26,7 @@ class AddableChoiceWidget(z3c.form.browser.text.TextWidget):
         val = [v for v in val if v]
         if val:
             return val[-1]
-        return ''
+        return u''
 
     def extract(self, default=z3c.form.interfaces.NOVALUE):
         """See z3c.form.interfaces.IWidget.
@@ -55,9 +55,10 @@ class AddableChoiceWidget(z3c.form.browser.text.TextWidget):
         if added_value and added_value not in values:
             values.append(added_value)
 
-        options = [{'value': '', 'display': self.promptMessage}]
+        options = [{'value': self.noValueToken, 'display': self.promptMessage}]
         for v in values:
             options.append({'value': v,'display': v})
+        print options
         return options
 
 @zope.component.adapter(zope.schema.TextLine, z3c.form.interfaces.IFormLayer)
